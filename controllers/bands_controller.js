@@ -2,16 +2,24 @@
 const bands = require("express").Router();
 const db = require("../models");
 const { Band } = db;
+const { Op } = require("sequelize");
 
+//FIND ALL BANDS, ORDERED BY ASCENDING START DATE
 bands.get("/", async (req, res) => {
     try {
-        const foundBands = await Band.findAll();
+        const foundBands = await Band.findAll({
+            order: [ [ "available_start_time" , "ASC" ] ],
+            where: {
+                name: { [Op.like]: `%${req.query.name ? req.query.name : ""}%` }
+            }
+        });
         res.status(200).json(foundBands);
     } catch (err) {
         res.status(500).json(err);
     }
 });
 
+//GET BAND BY ID
 bands.get("/:id", async (req, res) => {
     try {
         const foundBand = await Band.findOne({
@@ -23,6 +31,7 @@ bands.get("/:id", async (req, res) => {
     }
 });
 
+//ADD NEW BAND
 bands.post("/", async (req, res) => {
     try {
         const newBand = await Band.create(req.body);
@@ -35,6 +44,7 @@ bands.post("/", async (req, res) => {
     }
 });
 
+//UPDATE BAND INFO
 bands.put("/:id", async (req, res) => {
     try {
         const updatedBands = await Band.update(req.body, {
@@ -48,6 +58,7 @@ bands.put("/:id", async (req, res) => {
     }
 });
 
+//DELETE BAND
 bands.delete("/:id", async (req, res) => {
     try {
         const deletedBands = await Band.destroy({
