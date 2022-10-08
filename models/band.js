@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    avalable_start_time: {
+    available_start_time: {
         type: DataTypes.DATE,
         allowNull: false
     },
